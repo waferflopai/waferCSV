@@ -1,0 +1,2935 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <!-- ─── META TAGS ─── -->
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
+    <meta name="google-site-verification" content="Ld4a65NxUjRimxJDm60LoDW2TyPSW-8oBd1dIUso_r0" />
+
+    <!-- ─── PRIMARY SEO ─── -->
+    <title>waferCSV — CSV to JSON Converter · Free · Private · No Uploads</title>
+    <meta name="description" content="waferCSV converts CSV to JSON instantly in your browser. 100% client-side, no uploads, no sign-up. Clean, Compact, or Mini output. Free and private." />
+    <meta name="robots" content="index, follow" />
+    <link rel="canonical" href="https://wafercsv.vercel.app/" />
+
+    <!-- ─── OPEN GRAPH ─── -->
+    <meta property="og:title" content="waferCSV — CSV to JSON Converter · Free · Private · No Uploads" />
+    <meta property="og:description" content="Convert CSV to JSON instantly in your browser. 100% client-side, no uploads, no sign-up. Clean, Compact, or Mini output." />
+    <meta property="og:type" content="website" />
+    <meta property="og:url" content="https://wafercsv.vercel.app/" />
+    <meta property="og:image" content="https://wafercsv.vercel.app/og-image.png" />
+    <meta property="og:image:width" content="1200" />
+    <meta property="og:image:height" content="630" />
+
+    <!-- ─── TWITTER CARD ─── -->
+    <meta name="twitter:card" content="summary_large_image" />
+    <meta name="twitter:title" content="waferCSV — CSV to JSON Converter · Free · Private" />
+    <meta name="twitter:description" content="Convert CSV to JSON instantly in your browser. 100% client-side, no uploads, no sign-up." />
+
+    <!-- ─── FAVICON (black bg + soft green option-key symbol) ─── -->
+    <link rel="icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23000000'/%3E%3Ctext x='50' y='72' font-family='Arial, sans-serif' font-size='60' font-weight='500' fill='%238ccb8a' text-anchor='middle'%3E⎇%3C/text%3E%3C/svg%3E" />
+    <link rel="apple-touch-icon" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'%3E%3Crect width='100' height='100' rx='20' fill='%23000000'/%3E%3Ctext x='50' y='72' font-family='Arial, sans-serif' font-size='60' font-weight='500' fill='%238ccb8a' text-anchor='middle'%3E⎇%3C/text%3E%3C/svg%3E" />
+
+    <!-- ─── STRUCTURED DATA ─── -->
+    <script type="application/ld+json">
+        {
+            "@context": "https://schema.org",
+            "@type": "SoftwareApplication",
+            "name": "waferCSV",
+            "description": "Convert CSV to JSON instantly in your browser. 100% client-side, no uploads, no sign-up.",
+            "applicationCategory": "DeveloperApplication",
+            "operatingSystem": "All",
+            "browserRequirements": "Requires JavaScript",
+            "offers": {
+                "@type": "Offer",
+                "price": "0",
+                "priceCurrency": "USD"
+            },
+            "author": {
+                "@type": "Person",
+                "name": "waferflopai",
+                "url": "https://github.com/waferflopai"
+            },
+            "url": "https://wafercsv.vercel.app/"
+        }
+    </script>
+
+    <link href="https://fonts.googleapis.com/css2?family=Jura:wght@300..700&display=swap" rel="stylesheet" />
+    <style>
+        /* ── reset & base ── */
+        *,
+        *::before,
+        *::after {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        :root {
+            --bg: #f5f5f2;
+            --surface: #ffffff;
+            --border: #d2d2ce;
+            --border-light: #e6e6e2;
+            --border-faint: #f0f0ec;
+            --text: #1c1c1a;
+            --text-dim: #6b6b67;
+            --text-muted: #9a9a96;
+            --accent: #2c2c2a;
+            --accent-hover: #4a4a47;
+            --highlight: #edede8;
+            --highlight-border: #b8b8b3;
+            --shadow: 0 1px 4px rgba(0, 0, 0, 0.04);
+            --font: 'Jura', 'Courier New', monospace;
+            --font-size: 13px;
+            --line-height: 1.5;
+            --transition: 0.15s ease;
+            --scrollbar-track: #efefeb;
+            --scrollbar-thumb: #c5c5c0;
+            --scrollbar-thumb-hover: #b0b0ab;
+            --grid-header-bg: #ecece8;
+            --grid-border: #d8d8d3;
+            --grid-cell-pad: 6px 10px;
+
+            /* brand green */
+            --brand-green: #8ccb8a;
+            --brand-green-dark: #2c5a2c;
+
+            /* type colors */
+            --type-string: #4a7a9c;
+            --type-string-bg: #eaf0f5;
+            --type-integer: #d4a600;
+            --type-integer-bg: #fffbe6;
+            --type-float: #8b6bb0;
+            --type-float-bg: #f0ebf5;
+            --type-boolean: #5a8a6a;
+            --type-boolean-bg: #e8f0eb;
+            --type-date: #d63031;
+            --type-date-bg: #ffebee;
+            --type-null: #8a8a8a;
+            --type-null-bg: #f0f0ef;
+        }
+
+        html {
+            font-size: var(--font-size);
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: var(--font);
+            background: var(--bg);
+            color: var(--text);
+            line-height: var(--line-height);
+            padding: 20px 24px 40px;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        }
+
+        ::-webkit-scrollbar {
+            width: 5px;
+            height: 5px;
+        }
+        ::-webkit-scrollbar-track {
+            background: var(--scrollbar-track);
+        }
+        ::-webkit-scrollbar-thumb {
+            background: var(--scrollbar-thumb);
+            transition: background var(--transition);
+        }
+        ::-webkit-scrollbar-thumb:hover {
+            background: var(--scrollbar-thumb-hover);
+        }
+        * {
+            scrollbar-width: thin;
+            scrollbar-color: var(--scrollbar-thumb) var(--scrollbar-track);
+        }
+
+        .app {
+            max-width: 1440px;
+            width: 100%;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            box-shadow: var(--shadow);
+            padding: 28px 28px 32px;
+            display: flex;
+            flex-direction: column;
+            gap: 24px;
+        }
+
+        h1,
+        h2,
+        h3,
+        label,
+        button,
+        input,
+        textarea,
+        select,
+        .chip,
+        .json-view {
+            font-family: var(--font);
+        }
+
+        h1 {
+            font-size: 19px;
+            font-weight: 500;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text);
+            margin: 0;
+            display: flex;
+            align-items: center;
+            gap: 12px;
+        }
+        h1 .brand {
+            color: var(--brand-green-dark);
+            font-weight: 600;
+        }
+        h1 .brand-icon {
+            display: inline-block;
+            background: var(--brand-green);
+            color: var(--brand-green-dark);
+            font-size: 14px;
+            font-weight: 400;
+            padding: 0 6px;
+            line-height: 24px;
+            border-radius: 4px;
+            margin-right: 2px;
+        }
+        h1 small {
+            font-weight: 300;
+            font-size: 12px;
+            color: var(--text-dim);
+            letter-spacing: 0.08em;
+            margin-left: 4px;
+        }
+
+        .label-sm {
+            font-size: 10px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            font-weight: 400;
+        }
+
+        .panel-title {
+            font-size: 10.5px;
+            letter-spacing: 0.08em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            font-weight: 400;
+            margin-bottom: 8px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+        .panel-title .step {
+            background: var(--accent);
+            color: #fff;
+            padding: 0 8px;
+            font-size: 9px;
+            line-height: 18px;
+            border-radius: 0;
+        }
+
+        .helper-text {
+            font-size: 9.5px;
+            color: var(--text-muted);
+            font-weight: 300;
+            letter-spacing: 0.03em;
+            display: block;
+            margin-top: 2px;
+            line-height: 1.4;
+        }
+
+        /* ─── HEADER ─── */
+        .header-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px 20px;
+            border-bottom: 1px solid var(--border-light);
+            padding-bottom: 16px;
+        }
+        .header-row .left {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .header-row .right {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+
+        .btn {
+            display: inline-flex;
+            align-items: center;
+            justify-content: center;
+            gap: 6px;
+            padding: 5px 14px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            color: var(--text);
+            font-size: 10.5px;
+            font-weight: 400;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            cursor: pointer;
+            transition: background var(--transition), border-color var(--transition), color var(--transition),
+                box-shadow var(--transition);
+            font-family: var(--font);
+            height: 30px;
+            white-space: nowrap;
+            border-radius: 0;
+        }
+        .btn:hover {
+            background: var(--highlight);
+            border-color: var(--highlight-border);
+        }
+        .btn:active {
+            background: var(--border);
+        }
+        .btn-primary {
+            background: var(--accent);
+            border-color: var(--accent);
+            color: #fff;
+        }
+        .btn-primary:hover {
+            background: var(--accent-hover);
+            border-color: var(--accent-hover);
+            color: #fff;
+        }
+        .btn-primary:active {
+            background: #1a1a18;
+        }
+        .btn-outline {
+            background: transparent;
+            border-color: var(--border);
+        }
+        .btn-outline:hover {
+            background: var(--highlight);
+        }
+        .btn-sm {
+            font-size: 9px;
+            padding: 2px 10px;
+            height: 24px;
+            letter-spacing: 0.07em;
+        }
+        .btn:disabled {
+            opacity: 0.3;
+            pointer-events: none;
+        }
+
+        .btn-group {
+            display: flex;
+            gap: 2px;
+            border: 1px solid var(--border);
+        }
+        .btn-group .view-toggle {
+            border: none;
+            border-radius: 0;
+            background: var(--surface);
+            color: var(--text-dim);
+            height: 24px;
+            padding: 0 10px;
+            font-size: 9px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+        }
+        .btn-group .view-toggle.active {
+            background: var(--accent);
+            color: #fff;
+        }
+        .btn-group .view-toggle:hover {
+            background: var(--highlight);
+        }
+        .btn-group .view-toggle.active:hover {
+            background: var(--accent-hover);
+        }
+
+        /* ─── 3-COLUMN LAYOUT ─── */
+        .main-grid {
+            display: grid;
+            grid-template-columns: 1.6fr 0.9fr 0.9fr;
+            gap: 24px;
+            align-items: start;
+        }
+
+        .panel {
+            display: flex;
+            flex-direction: column;
+            gap: 16px;
+            min-width: 0;
+        }
+
+        .panel-left .grid-section {
+            border: 1px solid var(--border-light);
+            background: var(--surface);
+            transition: border-color var(--transition);
+        }
+        .panel-left .grid-section:focus-within {
+            border-color: var(--accent);
+        }
+
+        .panel-middle .schema-section {
+            border-top: none;
+            padding-top: 0;
+            margin-top: 0;
+        }
+        .panel-middle .output-controls {
+            margin: 0;
+            padding: 12px 14px;
+            background: var(--bg);
+            border: 1px solid var(--border-light);
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+        .panel-middle .output-controls .control-row {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px 16px;
+        }
+        .panel-middle .output-controls .control-group {
+            display: flex;
+            align-items: center;
+            gap: 4px 8px;
+            flex-wrap: wrap;
+        }
+        .panel-middle .output-controls .control-group .label-sm {
+            margin-right: 2px;
+        }
+
+        .panel-right .output-section {
+            border-top: none;
+            padding-top: 0;
+            margin-top: 0;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+        }
+
+        /* ─── LEFT: GRID ─── */
+        .validation-alert {
+            background: #f5ece8;
+            border: 1px solid #d4a896;
+            color: #b45a3c;
+            padding: 6px 10px;
+            font-size: 10.5px;
+            letter-spacing: 0.04em;
+            display: none;
+            margin: 0;
+        }
+        .validation-alert.show {
+            display: block;
+        }
+
+        .grid-container {
+            width: 100%;
+            max-height: 380px;
+            overflow: auto;
+            position: relative;
+            background: var(--surface);
+            transition: border-color 0.2s, background 0.2s;
+        }
+        .grid-container.drag-over-highlight {
+            border: 2px dashed var(--accent);
+            background: var(--highlight);
+        }
+
+        .grid-container table {
+            width: 100%;
+            border-collapse: collapse;
+            font-family: var(--font);
+            font-size: 11.5px;
+            text-align: left;
+            table-layout: auto;
+        }
+
+        .grid-container th {
+            background: var(--grid-header-bg);
+            font-weight: 500;
+            font-size: 10px;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+            padding: var(--grid-cell-pad);
+            border-bottom: 2px solid var(--grid-border);
+            border-right: 1px solid var(--border-faint);
+            position: sticky;
+            top: 0;
+            z-index: 3;
+            white-space: nowrap;
+            min-width: 50px;
+        }
+        .grid-container th:last-child {
+            border-right: none;
+        }
+
+        .grid-container td {
+            padding: var(--grid-cell-pad);
+            border-bottom: 1px solid var(--border-faint);
+            border-right: 1px solid var(--border-faint);
+            color: var(--text);
+            font-weight: 300;
+            max-width: 200px;
+            overflow: hidden;
+            text-overflow: ellipsis;
+            white-space: nowrap;
+        }
+        .grid-container td:last-child {
+            border-right: none;
+        }
+        .grid-container tr:hover td {
+            background: rgba(0, 0, 0, 0.015);
+        }
+
+        .grid-container .empty-state {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            min-height: 160px;
+            color: var(--text-muted);
+            font-weight: 300;
+            font-size: 12.5px;
+            letter-spacing: 0.04em;
+            padding: 24px 16px;
+            text-align: center;
+            gap: 6px;
+            background: var(--bg);
+        }
+        .grid-container .empty-state .big-icon {
+            font-size: 26px;
+            opacity: 0.4;
+        }
+        .grid-container .empty-state .hint {
+            font-size: 10.5px;
+            color: var(--text-muted);
+            opacity: 0.7;
+        }
+        .grid-container .empty-state kbd {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 1px 8px;
+            font-family: var(--font);
+            font-size: 9.5px;
+            letter-spacing: 0.06em;
+        }
+
+        .grid-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px 10px;
+            padding: 6px 10px;
+            background: var(--bg);
+            border-bottom: 1px solid var(--border-light);
+        }
+        .grid-toolbar .left {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+        }
+        .grid-toolbar .right {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+            flex-wrap: wrap;
+            margin-left: auto;
+        }
+        .grid-toolbar .stat-label {
+            font-size: 9.5px;
+            color: var(--text-dim);
+            letter-spacing: 0.04em;
+        }
+        .grid-toolbar .stat-label strong {
+            color: var(--text);
+            font-weight: 500;
+        }
+
+        .delim-select {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+        }
+        .delim-select select {
+            font-family: var(--font);
+            font-size: 9.5px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            padding: 1px 4px;
+            height: 22px;
+            outline: none;
+            border-radius: 0;
+            cursor: pointer;
+            color: var(--text);
+        }
+        .delim-select select:focus {
+            border-color: var(--accent);
+        }
+
+        .mini-status {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px 16px;
+            padding: 4px 10px 6px;
+            font-size: 10px;
+            color: var(--text-dim);
+            letter-spacing: 0.02em;
+            border-top: 1px solid var(--border-faint);
+            background: var(--bg);
+        }
+        .mini-status .stat {
+            display: inline-flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .mini-status .stat strong {
+            font-weight: 500;
+            color: var(--text);
+        }
+        .mini-status .badge {
+            background: var(--highlight);
+            padding: 0 10px;
+            border: 1px solid var(--border-light);
+            font-size: 9px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            line-height: 18px;
+        }
+        .mini-status .badge.ok {
+            background: #e8f0ec;
+            border-color: #b8d4c4;
+            color: #2a6d4a;
+        }
+        .mini-status .badge.error {
+            background: #f5ece8;
+            border-color: #d4a896;
+            color: #b45a3c;
+        }
+        .mini-status .detected-badge {
+            background: #e8f0ec;
+            color: #2a6d4a;
+            padding: 0 8px;
+            border: 1px solid #b8d4c4;
+            font-size: 8.5px;
+            letter-spacing: 0.04em;
+            text-transform: uppercase;
+            line-height: 18px;
+        }
+
+        /* ─── MIDDLE: SCHEMA ─── */
+        .schema-toolbar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 4px 12px;
+            margin-bottom: 10px;
+        }
+        .schema-toolbar .label-sm {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .schema-toolbar input[type="number"] {
+            width: 44px;
+            padding: 1px 4px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            font-family: var(--font);
+            font-size: 10px;
+            color: var(--text);
+            text-align: center;
+            outline: none;
+            height: 22px;
+            border-radius: 0;
+        }
+        .schema-toolbar input[type="number"]:focus {
+            border-color: var(--accent);
+        }
+
+        .master-check {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            cursor: pointer;
+            font-size: 10px;
+            letter-spacing: 0.05em;
+            text-transform: uppercase;
+            color: var(--text-dim);
+        }
+        .master-check input[type="checkbox"] {
+            width: 13px;
+            height: 13px;
+            accent-color: var(--accent);
+            cursor: pointer;
+            margin: 0;
+            border: 1px solid var(--border);
+            border-radius: 0;
+            appearance: none;
+            background: var(--surface);
+            position: relative;
+            transition: background var(--transition), border-color var(--transition);
+        }
+        .master-check input[type="checkbox"]:checked {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+        .master-check input[type="checkbox"]:checked::after {
+            content: "✓";
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 9px;
+            font-weight: 700;
+        }
+
+        .schema-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fill, minmax(180px, 1fr));
+            gap: 6px;
+            padding: 8px 10px;
+            min-height: 60px;
+            border: 1px solid var(--border-light);
+            background: var(--bg);
+            transition: border-color var(--transition);
+            max-height: 280px;
+            overflow-y: auto;
+        }
+        .schema-grid.drag-over {
+            border-color: var(--accent);
+            background: var(--highlight);
+        }
+
+        .schema-chip {
+            display: flex;
+            align-items: center;
+            gap: 3px;
+            padding: 3px 6px 3px 4px;
+            background: var(--surface);
+            border: 1px solid var(--border);
+            font-size: 10.5px;
+            letter-spacing: 0.02em;
+            cursor: grab;
+            user-select: none;
+            transition: border-color var(--transition), background var(--transition), box-shadow var(--transition);
+            position: relative;
+            touch-action: none;
+            border-radius: 0;
+            min-height: 34px;
+            flex-wrap: wrap;
+        }
+        .schema-chip:hover {
+            border-color: var(--highlight-border);
+            background: var(--highlight);
+        }
+        .schema-chip.dragging {
+            opacity: 0.4;
+            border-style: dashed;
+        }
+        .schema-chip.drag-over-chip {
+            border-color: var(--accent);
+            background: var(--highlight);
+            box-shadow: inset 0 0 0 1px var(--accent);
+        }
+        .schema-chip .chip-handle {
+            color: var(--text-muted);
+            font-size: 10px;
+            cursor: grab;
+            padding: 0 2px;
+            opacity: 0.3;
+            transition: opacity var(--transition);
+            flex-shrink: 0;
+        }
+        .schema-chip:hover .chip-handle {
+            opacity: 1;
+        }
+        .schema-chip .chip-check {
+            flex-shrink: 0;
+        }
+        .schema-chip .chip-check input[type="checkbox"] {
+            width: 13px;
+            height: 13px;
+            accent-color: var(--accent);
+            cursor: pointer;
+            margin: 0;
+            border: 1px solid var(--border);
+            border-radius: 0;
+            appearance: none;
+            background: var(--surface);
+            position: relative;
+            transition: background var(--transition), border-color var(--transition);
+            flex-shrink: 0;
+        }
+        .schema-chip .chip-check input[type="checkbox"]:checked {
+            background: var(--accent);
+            border-color: var(--accent);
+        }
+        .schema-chip .chip-check input[type="checkbox"]:checked::after {
+            content: "✓";
+            position: absolute;
+            inset: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #fff;
+            font-size: 9px;
+            font-weight: 700;
+        }
+        .schema-chip .chip-name {
+            flex: 1;
+            min-width: 40px;
+        }
+        .schema-chip .chip-name input {
+            width: 100%;
+            border: none;
+            background: transparent;
+            font-family: var(--font);
+            font-size: 10.5px;
+            color: var(--text);
+            padding: 1px 3px;
+            border-bottom: 1px dotted transparent;
+            transition: border-color var(--transition);
+            outline: none;
+            border-radius: 0;
+            min-width: 20px;
+        }
+        .schema-chip .chip-name input:hover {
+            border-bottom-color: var(--border);
+        }
+        .schema-chip .chip-name input:focus {
+            border-bottom-color: var(--accent);
+        }
+        .chip-type-wrap {
+            position: relative;
+            flex-shrink: 0;
+        }
+        .chip-type-select {
+            font-size: 8px;
+            text-transform: uppercase;
+            padding: 1px 14px 1px 4px;
+            height: 20px;
+            font-family: var(--font);
+            font-weight: 500;
+            cursor: pointer;
+            outline: none;
+            border-radius: 0;
+            border: 1px solid var(--border-light);
+            background: var(--surface);
+            transition: border-color var(--transition), background var(--transition), color var(--transition);
+            min-width: 50px;
+            letter-spacing: 0.04em;
+            appearance: none;
+            -webkit-appearance: none;
+            background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='8' height='6'%3E%3Cpath d='M0 0l4 6 4-6z' fill='%239a9a96'/%3E%3C/svg%3E");
+            background-repeat: no-repeat;
+            background-position: right 4px center;
+            background-size: 7px 5px;
+        }
+        .chip-type-select:focus {
+            border-color: var(--accent);
+        }
+        .chip-type-select.type-string {
+            background-color: var(--type-string-bg);
+            border-color: var(--type-string);
+            color: var(--type-string);
+        }
+        .chip-type-select.type-integer {
+            background-color: var(--type-integer-bg);
+            border-color: var(--type-integer);
+            color: var(--type-integer);
+        }
+        .chip-type-select.type-float {
+            background-color: var(--type-float-bg);
+            border-color: var(--type-float);
+            color: var(--type-float);
+        }
+        .chip-type-select.type-boolean {
+            background-color: var(--type-boolean-bg);
+            border-color: var(--type-boolean);
+            color: var(--type-boolean);
+        }
+        .chip-type-select.type-date {
+            background-color: var(--type-date-bg);
+            border-color: var(--type-date);
+            color: var(--type-date);
+        }
+        .chip-type-select.type-null {
+            background-color: var(--type-null-bg);
+            border-color: var(--type-null);
+            color: var(--type-null);
+        }
+
+        /* fix dropdown options colors */
+        .chip-type-select option {
+            padding: 2px 6px;
+            font-weight: 400;
+            color: var(--text);
+            background: var(--surface);
+            border-left: 3px solid transparent;
+        }
+        .chip-type-select option.opt-string {
+            color: var(--type-string);
+            background: var(--type-string-bg);
+            border-left-color: var(--type-string);
+        }
+        .chip-type-select option.opt-integer {
+            color: var(--type-integer);
+            background: var(--type-integer-bg);
+            border-left-color: var(--type-integer);
+        }
+        .chip-type-select option.opt-float {
+            color: var(--type-float);
+            background: var(--type-float-bg);
+            border-left-color: var(--type-float);
+        }
+        .chip-type-select option.opt-boolean {
+            color: var(--type-boolean);
+            background: var(--type-boolean-bg);
+            border-left-color: var(--type-boolean);
+        }
+        .chip-type-select option.opt-date {
+            color: var(--type-date);
+            background: var(--type-date-bg);
+            border-left-color: var(--type-date);
+        }
+        .chip-type-select option.opt-null {
+            color: var(--type-null);
+            background: var(--type-null-bg);
+            border-left-color: var(--type-null);
+        }
+
+        .schema-chip .chip-remove {
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 12px;
+            line-height: 1;
+            padding: 0 2px;
+            opacity: 0.25;
+            transition: opacity var(--transition), color var(--transition);
+            flex-shrink: 0;
+        }
+        .schema-chip .chip-remove:hover {
+            opacity: 1;
+            color: #c33;
+        }
+
+        /* ─── RIGHT PANEL: CLEAN LAYOUT ─── */
+        .output-export-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 8px 12px;
+            padding-bottom: 10px;
+            border-bottom: 1px solid var(--border-light);
+        }
+        .output-export-bar .filename-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            border: 1px solid var(--border-light);
+            padding: 0 4px 0 8px;
+            background: var(--bg);
+            height: 28px;
+        }
+        .output-export-bar .filename-group input {
+            border: none;
+            background: transparent;
+            font-family: var(--font);
+            font-size: 10.5px;
+            color: var(--text);
+            padding: 1px 0;
+            width: 80px;
+            outline: none;
+        }
+        .output-export-bar .filename-group .ext {
+            font-size: 9px;
+            color: var(--text-muted);
+            font-weight: 300;
+        }
+
+        .output-view-bar {
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            gap: 6px 14px;
+            padding: 4px 0 6px;
+        }
+        .output-view-bar .control-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+        }
+        .output-view-bar .format-select {
+            font-family: var(--font);
+            font-size: 9.5px;
+            border: 1px solid var(--border);
+            background: var(--surface);
+            padding: 1px 4px;
+            height: 24px;
+            outline: none;
+            border-radius: 0;
+            cursor: pointer;
+            color: var(--text);
+        }
+        .output-view-bar .format-select:focus {
+            border-color: var(--accent);
+        }
+        .output-view-bar .action-group {
+            display: flex;
+            align-items: center;
+            gap: 4px;
+            margin-left: auto;
+        }
+        .output-view-bar .output-size {
+            font-size: 9.5px;
+            color: var(--text-muted);
+            font-weight: 300;
+            letter-spacing: 0.04em;
+            white-space: nowrap;
+        }
+
+        .json-wrap {
+            background: var(--bg);
+            border: 1px solid var(--border);
+            padding: 14px 16px;
+            min-height: 180px;
+            max-height: 380px;
+            overflow: auto;
+            position: relative;
+            font-family: var(--font);
+            font-size: 11.5px;
+            line-height: 1.6;
+            tab-size: 2;
+            transition: border-color var(--transition);
+            border-radius: 0;
+        }
+        .json-wrap:focus-within {
+            border-color: var(--accent);
+        }
+        .json-wrap .empty-state {
+            color: var(--text-muted);
+            font-style: italic;
+            font-weight: 300;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            min-height: 110px;
+            user-select: none;
+        }
+        .json-wrap .minified-hint {
+            position: sticky;
+            bottom: 0;
+            background: rgba(44, 44, 42, 0.06);
+            color: var(--text-muted);
+            font-size: 8.5px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            padding: 2px 10px;
+            text-align: center;
+            border-top: 1px solid var(--border-light);
+            margin-top: 6px;
+        }
+        .json-wrap .raw-json {
+            font-family: var(--font);
+            font-size: 11.5px;
+            white-space: pre-wrap;
+            word-break: break-all;
+            margin: 0;
+            color: var(--text);
+        }
+
+        .json-tree {
+            font-family: var(--font);
+            font-size: 11.5px;
+            white-space: pre-wrap;
+            word-break: break-word;
+        }
+        .json-tree .node {
+            position: relative;
+            padding: 1px 0;
+            border-left: 2px solid transparent;
+            transition: background 0.08s ease, border-color 0.08s ease;
+            cursor: default;
+        }
+        .json-tree .node:hover {
+            background: rgba(0, 0, 0, 0.03);
+            border-left-color: var(--accent);
+        }
+        .json-tree .node.highlight {
+            background: rgba(0, 0, 0, 0.05);
+            border-left-color: var(--accent);
+        }
+        .json-tree .node .key {
+            color: var(--type-string);
+            font-weight: 500;
+        }
+        .json-tree .node .key::after {
+            content: ": ";
+            font-weight: 300;
+            color: var(--text-dim);
+        }
+        .json-tree .node .value-string {
+            color: var(--type-string);
+        }
+        .json-tree .node .value-integer {
+            color: var(--type-integer);
+        }
+        .json-tree .node .value-number {
+            color: var(--type-float);
+        }
+        .json-tree .node .value-float {
+            color: var(--type-float);
+        }
+        .json-tree .node .value-boolean {
+            color: var(--type-boolean);
+        }
+        .json-tree .node .value-date {
+            color: var(--type-date);
+        }
+        .json-tree .node .value-null {
+            color: var(--type-null);
+            font-style: italic;
+        }
+        .json-tree .node .value-object,
+        .json-tree .node .value-array {
+            color: var(--text-dim);
+            font-weight: 300;
+        }
+        .json-tree .node .toggle {
+            display: inline-block;
+            width: 16px;
+            text-align: center;
+            cursor: pointer;
+            user-select: none;
+            color: var(--text-muted);
+            font-size: 8px;
+            transition: transform 0.2s ease;
+            transform: rotate(0deg);
+        }
+        .json-tree .node .toggle.open {
+            transform: rotate(90deg);
+        }
+        .json-tree .node .children {
+            padding-left: 18px;
+            border-left: 1px solid var(--border-light);
+            margin-left: 4px;
+        }
+        .json-tree .node .children.collapsed {
+            display: none;
+        }
+        .json-tree .node .comma {
+            color: var(--text-muted);
+        }
+
+        /* ─── PROCESSING OVERLAY ─── */
+        #processingOverlay {
+            background: rgba(255, 255, 255, 0.85);
+            padding: 12px 16px;
+            text-align: center;
+            font-size: 12px;
+            border: 1px solid var(--border-light);
+            margin-bottom: 0;
+            color: var(--text-dim);
+            letter-spacing: 0.04em;
+        }
+        #processingOverlay .spinner {
+            display: inline-block;
+            width: 16px;
+            height: 16px;
+            border: 2px solid var(--border);
+            border-top-color: var(--accent);
+            border-radius: 50%;
+            animation: spin 0.8s linear infinite;
+            margin-right: 8px;
+            vertical-align: middle;
+        }
+        @keyframes spin {
+            to {
+                transform: rotate(360deg);
+            }
+        }
+
+        /* ─── drag ghost ─── */
+        .drag-ghost {
+            position: fixed;
+            pointer-events: none;
+            z-index: 999;
+            background: var(--surface);
+            border: 1px solid var(--accent);
+            padding: 3px 14px;
+            font-family: var(--font);
+            font-size: 10px;
+            letter-spacing: 0.04em;
+            color: var(--text);
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.07);
+            opacity: 0.92;
+            transform: translate(-50%, -50%);
+            white-space: nowrap;
+            border-radius: 0;
+        }
+
+        /* ─── Custom Modals ─── */
+        .modal-overlay {
+            position: fixed;
+            inset: 0;
+            background: rgba(0, 0, 0, 0.35);
+            display: none;
+            align-items: center;
+            justify-content: center;
+            z-index: 1000;
+            backdrop-filter: blur(2px);
+            padding: 20px;
+        }
+        .modal-overlay.active {
+            display: flex;
+        }
+        .modal-box {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            max-width: 600px;
+            width: 100%;
+            padding: 28px 32px;
+            box-shadow: 0 8px 32px rgba(0, 0, 0, 0.12);
+            display: flex;
+            flex-direction: column;
+            gap: 18px;
+        }
+        .modal-box h2 {
+            font-size: 16px;
+            font-weight: 400;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            color: var(--text);
+            margin: 0;
+        }
+        .modal-box p {
+            font-size: 12px;
+            color: var(--text-dim);
+            margin: -6px 0 0;
+        }
+        .modal-box textarea {
+            width: 100%;
+            min-height: 200px;
+            font-family: var(--font);
+            font-size: 12px;
+            border: 1px solid var(--border);
+            padding: 10px 12px;
+            resize: vertical;
+            background: var(--bg);
+            color: var(--text);
+            outline: none;
+            transition: border-color var(--transition);
+        }
+        .modal-box textarea:focus {
+            border-color: var(--accent);
+        }
+        .modal-box .modal-actions {
+            display: flex;
+            justify-content: flex-end;
+            gap: 10px;
+        }
+        .modal-box .modal-actions .btn {
+            min-width: 80px;
+        }
+
+        /* ─── Toast ─── */
+        .toast-container {
+            position: fixed;
+            bottom: 30px;
+            right: 30px;
+            display: flex;
+            flex-direction: column;
+            gap: 10px;
+            z-index: 2000;
+            max-width: 380px;
+            width: 100%;
+            pointer-events: none;
+        }
+        .toast {
+            background: var(--surface);
+            border: 1px solid var(--border);
+            padding: 12px 18px;
+            box-shadow: 0 4px 16px rgba(0, 0, 0, 0.06);
+            font-size: 11px;
+            letter-spacing: 0.04em;
+            color: var(--text);
+            pointer-events: auto;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+            transition: transform 0.25s ease, opacity 0.25s ease;
+            transform: translateX(0);
+            opacity: 1;
+        }
+        .toast.hide {
+            transform: translateX(40px);
+            opacity: 0;
+        }
+        .toast .toast-icon {
+            font-size: 16px;
+            flex-shrink: 0;
+        }
+        .toast .toast-close {
+            margin-left: auto;
+            cursor: pointer;
+            color: var(--text-muted);
+            font-size: 14px;
+            padding: 0 4px;
+            background: none;
+            border: none;
+            font-family: var(--font);
+            transition: color var(--transition);
+        }
+        .toast .toast-close:hover {
+            color: var(--text);
+        }
+        .toast.info {
+            border-left: 3px solid var(--type-string);
+        }
+        .toast.success {
+            border-left: 3px solid var(--type-boolean);
+        }
+        .toast.error {
+            border-left: 3px solid var(--type-date);
+        }
+
+        /* ─── FOOTER ─── */
+        .app-footer {
+            border-top: 1px solid var(--border-light);
+            padding-top: 20px;
+            margin-top: 4px;
+            display: flex;
+            flex-wrap: wrap;
+            align-items: center;
+            justify-content: space-between;
+            gap: 12px 20px;
+            font-size: 10.5px;
+            color: var(--text-muted);
+            letter-spacing: 0.04em;
+        }
+        .app-footer a {
+            color: var(--text-dim);
+            text-decoration: none;
+            border-bottom: 1px dotted transparent;
+            transition: border-color var(--transition), color var(--transition);
+        }
+        .app-footer a:hover {
+            color: var(--text);
+            border-bottom-color: var(--text-dim);
+        }
+        .app-footer .footer-links {
+            display: flex;
+            align-items: center;
+            gap: 16px;
+            flex-wrap: wrap;
+        }
+        .app-footer .footer-links .sep {
+            color: var(--border);
+        }
+        .app-footer .mit-badge {
+            background: var(--highlight);
+            padding: 0 10px;
+            border: 1px solid var(--border-light);
+            font-size: 8.5px;
+            letter-spacing: 0.06em;
+            text-transform: uppercase;
+            line-height: 20px;
+        }
+        .app-footer .brand {
+            color: var(--brand-green-dark);
+            font-weight: 500;
+        }
+
+        /* ─── responsive ─── */
+        @media (max-width: 1100px) {
+            .main-grid {
+                grid-template-columns: 1fr 1fr;
+                gap: 20px;
+            }
+            .panel-right {
+                grid-column: 1 / -1;
+            }
+            .panel-right .json-wrap {
+                max-height: 300px;
+            }
+        }
+
+        @media (max-width: 740px) {
+            body {
+                padding: 8px 6px 24px;
+            }
+            .app {
+                padding: 14px 10px 20px;
+                gap: 16px;
+            }
+            .main-grid {
+                grid-template-columns: 1fr;
+                gap: 18px;
+            }
+            .panel-right {
+                grid-column: 1;
+            }
+            .header-row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+            }
+            .header-row .left,
+            .header-row .right {
+                flex-wrap: wrap;
+            }
+            .grid-container {
+                max-height: 200px;
+            }
+            .grid-container th,
+            .grid-container td {
+                padding: 3px 5px;
+                font-size: 9.5px;
+            }
+            .grid-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 4px;
+                padding: 4px 8px;
+            }
+            .grid-toolbar .right {
+                margin-left: 0;
+            }
+            .schema-toolbar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 4px;
+            }
+            .schema-grid {
+                grid-template-columns: 1fr !important;
+                max-height: 220px;
+                padding: 6px;
+            }
+            .schema-chip {
+                min-height: 38px;
+                padding: 4px 6px;
+                flex-wrap: wrap;
+                justify-content: flex-start;
+            }
+            .chip-type-select {
+                min-width: 60px;
+                font-size: 8px;
+                height: 20px;
+            }
+            .output-export-bar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 6px;
+            }
+            .output-view-bar {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 6px;
+            }
+            .output-view-bar .action-group {
+                margin-left: 0;
+            }
+            .json-wrap {
+                max-height: 260px;
+                padding: 10px 12px;
+                font-size: 10px;
+            }
+            .btn {
+                font-size: 9.5px;
+                padding: 3px 8px;
+                height: 26px;
+            }
+            .btn-sm {
+                font-size: 8.5px;
+                padding: 2px 6px;
+                height: 22px;
+            }
+            h1 {
+                font-size: 15px;
+            }
+            .delim-select select {
+                height: 20px;
+                font-size: 9px;
+            }
+            .panel-middle .output-controls .control-row {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 4px;
+            }
+            .output-export-bar .filename-group input {
+                width: 60px;
+            }
+            .mini-status {
+                font-size: 9px;
+                gap: 2px 10px;
+            }
+            .mini-status .badge {
+                font-size: 8px;
+                line-height: 16px;
+                padding: 0 6px;
+            }
+            .modal-box {
+                padding: 20px 16px;
+            }
+            .modal-box textarea {
+                min-height: 140px;
+            }
+            .toast-container {
+                bottom: 16px;
+                right: 16px;
+                left: 16px;
+                max-width: none;
+            }
+            .app-footer {
+                flex-direction: column;
+                align-items: stretch;
+                gap: 8px;
+                text-align: center;
+            }
+            .app-footer .footer-links {
+                justify-content: center;
+            }
+        }
+
+        .hidden {
+            display: none !important;
+        }
+        .text-muted {
+            color: var(--text-muted);
+        }
+        .text-dim {
+            color: var(--text-dim);
+        }
+        .flex-grow {
+            flex: 1;
+        }
+    </style>
+</head>
+<body>
+
+    <div class="app" id="app">
+
+        <!-- ─── HEADER ─── -->
+        <div class="header-row">
+            <div class="left">
+                <h1>                    
+                    <span class="brand">waferCSV</span>
+                    <small>CSV → JSON · free & private</small>
+                </h1>
+                <span class="label-sm" style="color:var(--text-muted);font-weight:300;">import · configure · export</span>
+            </div>
+            <div class="right">
+                <button class="btn btn-outline btn-sm" id="undoBtn" disabled aria-label="Undo changes">↶ undo</button>
+                <button class="btn btn-outline btn-sm" id="redoBtn" disabled aria-label="Redo changes">↷ redo</button>
+                <button class="btn btn-primary btn-sm" id="autoBtn" aria-label="Auto-configure columns and rows">⚡ auto</button>
+                <button class="btn btn-outline btn-sm" id="clearGridBtn" aria-label="Clear all data">✕ clear</button>
+            </div>
+        </div>
+
+        <!-- ─── PROCESSING OVERLAY ─── -->
+        <div id="processingOverlay" style="display:none;">
+            <span class="spinner"></span> Processing <span id="processingCount">0</span> rows…
+        </div>
+
+        <!-- ─── MAIN 3-COLUMN LAYOUT ─── -->
+        <div class="main-grid">
+
+            <!-- ===== LEFT PANEL: Import ===== -->
+            <div class="panel panel-left">
+                <div class="panel-title"><span class="step">1</span> Import CSV</div>
+                <div class="grid-section" id="gridSection">
+                    <div class="validation-alert" id="validationAlert"></div>
+                    <div class="grid-toolbar">
+                        <div class="left">
+                            <span class="stat-label">📋 <strong id="gridRowCount">0</strong> · <strong id="gridColCount">0</strong></span>
+                            <span id="delimDetectedBadge" class="detected-badge" style="display:none;">auto: ,</span>
+                        </div>
+                        <div class="right">
+                            <div class="delim-select">
+                                <span class="label-sm">delim</span>
+                                <select id="delimiterSelect">
+                                    <option value="auto">auto</option>
+                                    <option value=",">,</option>
+                                    <option value="	">tab</option>
+                                    <option value=";">;</option>
+                                    <option value="|">|</option>
+                                    <option value=" ">space</option>
+                                </select>
+                            </div>
+                            <button class="btn btn-sm btn-outline" id="parseGridBtn" aria-label="Parse CSV from prompt">⟳ paste</button>
+                            <button class="btn btn-sm btn-outline" id="uploadGridBtn" aria-label="Upload CSV file">📂 upload</button>
+                            <input type="file" id="gridFileInput" accept=".csv,.tsv,.txt" style="display:none;" />
+                        </div>
+                    </div>
+                    <div class="grid-container" id="gridContainer">
+                        <div class="empty-state" id="gridEmpty">
+                            <div class="big-icon">📋</div>
+                            <div>Paste CSV data here</div>
+                            <div class="hint">or <kbd>⌘V</kbd> / <kbd>Ctrl+V</kbd> · drag & drop a file</div>
+                        </div>
+                        <table id="gridTable" style="display:none;">
+                            <thead id="gridHead"></thead>
+                            <tbody id="gridBody"></tbody>
+                        </table>
+                    </div>
+                    <div class="mini-status" id="miniStatus">
+                        <span class="badge" id="statusBadge">idle</span>
+                        <span class="stat">rows <strong id="rowCount">—</strong></span>
+                        <span class="stat">cols <strong id="colCount">—</strong></span>
+                        <span class="stat">delim <strong id="delimDisplay">—</strong></span>
+                        <span id="fileInfo" style="color:var(--text-muted);margin-left:auto;"></span>
+                    </div>
+                </div>
+                <span class="helper-text">Paste, drag, or upload a CSV file. We auto‑detect the delimiter.</span>
+            </div>
+
+            <!-- ===== MIDDLE PANEL: Configure ===== -->
+            <div class="panel panel-middle">
+                <div class="panel-title"><span class="step">2</span> Configure</div>
+
+                <!-- Schema -->
+                <div class="schema-section" id="schemaSection">
+                    <div class="schema-toolbar">
+                        <span class="label-sm">columns</span>
+                        <label class="master-check">
+                            <input type="checkbox" id="masterCheck" /> all
+                        </label>
+                        <button class="btn btn-sm btn-outline" id="resetOverridesBtn" aria-label="Reset column overrides">reset</button>
+                        <span class="label-sm" style="margin-left:2px;">rows</span>
+                        <label class="label-sm" style="display:flex;align-items:center;gap:2px;">
+                            from <input type="number" id="rowStart" value="0" min="0" />
+                        </label>
+                        <label class="label-sm" style="display:flex;align-items:center;gap:2px;">
+                            to <input type="number" id="rowEnd" value="9999" min="0" />
+                        </label>
+                        <span class="label-sm" id="rowRangeInfo" style="color:var(--text-muted);font-weight:300;"></span>
+                    </div>
+                    <div class="schema-grid" id="schemaGrid">
+                        <span class="text-muted" style="font-size:10.5px;font-weight:300;padding:8px 0;width:100%;text-align:center;letter-spacing:0.04em;">
+                            load a CSV to see columns
+                        </span>
+                    </div>
+                    <span class="helper-text" style="margin-top:6px;">Check columns, rename them, or change their data type.</span>
+                </div>
+
+                <!-- Output Controls -->
+                <div class="output-controls" id="outputControls">
+                    <div class="control-row">
+                        <div class="control-group">
+                            <label class="label-sm" style="display:flex;align-items:center;gap:4px;cursor:pointer;">
+                                <input type="checkbox" id="excludeEmpty" /> exclude empty
+                            </label>
+                        </div>
+                        <div class="control-group">
+                            <label class="label-sm" style="display:flex;align-items:center;gap:4px;cursor:pointer;">
+                                <input type="checkbox" id="sortKeys" /> sort keys
+                            </label>
+                        </div>
+                        <div class="control-group">
+                            <span class="label-sm">as</span>
+                            <select id="outputFormat">
+                                <option value="array">Array</option>
+                                <option value="object">Hash (keyed)</option>
+                            </select>
+                            <select id="keyColumn" disabled style="min-width:70px;">
+                                <option value="">— key —</option>
+                            </select>
+                        </div>
+                    </div>
+                    <span class="helper-text">Choose output format, key column, and JSON styling.</span>
+                </div>
+            </div>
+
+            <!-- ===== RIGHT PANEL: Export ===== -->
+            <div class="panel panel-right">
+                <div class="panel-title"><span class="step">3</span> Export JSON</div>
+
+                <div class="output-section" id="outputSection">
+                    <!-- Row 1: Export Actions -->
+                    <div class="output-export-bar">
+                        <div class="filename-group">
+                            <span class="label-sm" style="margin-right:2px;">📄</span>
+                            <input type="text" id="fileNameInput" value="data" aria-label="Output filename" />
+                            <span class="ext">.json</span>
+                        </div>
+                        <button class="btn btn-sm btn-primary" id="downloadBtn" disabled aria-label="Download JSON">↓ Download</button>
+                        <button class="btn btn-sm btn-outline" id="copyBtn" disabled aria-label="Copy JSON to clipboard">⎘ Copy</button>
+                    </div>
+
+                    <!-- Row 2: View Controls -->
+                    <div class="output-view-bar">
+                        <div class="btn-group" role="group" aria-label="View mode">
+                            <button class="btn view-toggle active" data-view="tree" aria-label="Tree view">Tree</button>
+                            <button class="btn view-toggle" data-view="raw" aria-label="Raw JSON view">Raw</button>
+                        </div>
+                        <div class="control-group">
+                            <span class="label-sm">Format</span>
+                            <select id="formatSelect" class="format-select">
+                                <option value="clean" title="2-space indentation">Clean</option>
+                                <option value="compact" title="Newlines, no indentation">Compact</option>
+                                <option value="mini" title="Single line, no whitespace">Mini</option>
+                            </select>
+                        </div>
+                        <div class="action-group">
+                            <button class="btn btn-sm btn-outline" id="formatBtn" title="Re-format JSON">⟳</button>
+                            <button class="btn btn-sm btn-outline" id="collapseAllBtn" title="Collapse all tree nodes">⊟</button>
+                            <button class="btn btn-sm btn-outline" id="expandAllBtn" title="Expand all tree nodes">⊞</button>
+                            <span class="output-size" id="jsonSize"></span>
+                        </div>
+                    </div>
+
+                    <!-- JSON Display -->
+                    <div class="json-wrap" id="jsonWrap">
+                        <div class="empty-state">no data · import a CSV first</div>
+                    </div>
+                    <span class="helper-text" style="margin-top:2px;">Download, copy, or toggle between tree and raw JSON view.</span>
+                </div>
+            </div>
+
+        </div><!-- /main-grid -->
+
+        <!-- ─── FOOTER ─── -->
+        <footer class="app-footer">
+            <span>
+                <span class="brand">waferCSV</span> · made by <a href="https://waferflopai.vercel.app/" target="_blank" rel="noopener noreferrer">waferflopai</a>
+            </span>
+            <div class="footer-links">
+                <a href="https://github.com/waferflopai" target="_blank" rel="noopener noreferrer">GitHub</a>
+                <span class="sep">·</span>
+                <span class="mit-badge">MIT License</span>
+                <span class="sep">·</span>
+                <a href="https://github.com/waferflopai" target="_blank" rel="noopener noreferrer">source</a>
+            </div>
+        </footer>
+
+    </div><!-- /app -->
+
+    <!-- ─── PASTE MODAL ─── -->
+    <div class="modal-overlay" id="pasteModal">
+        <div class="modal-box">
+            <h2>Paste CSV Data</h2>
+            <textarea id="pasteTextarea" placeholder="Paste your CSV content here…"></textarea>
+            <div class="modal-actions">
+                <button class="btn btn-outline" id="modalCancelBtn">Cancel</button>
+                <button class="btn btn-primary" id="modalParseBtn">Parse</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── CONFIRM CLEAR MODAL ─── -->
+    <div class="modal-overlay" id="confirmModal">
+        <div class="modal-box" style="max-width: 420px;">
+            <h2>Clear all data?</h2>
+            <p>This will remove all CSV data, columns, and settings. This cannot be undone.</p>
+            <div class="modal-actions">
+                <button class="btn btn-outline" id="confirmCancelBtn">Cancel</button>
+                <button class="btn btn-primary" id="confirmOkBtn">Clear</button>
+            </div>
+        </div>
+    </div>
+
+    <!-- ─── TOAST CONTAINER ─── -->
+    <div class="toast-container" id="toastContainer"></div>
+
+    <!-- ─── DRAG GHOST ─── -->
+    <div class="drag-ghost hidden" id="dragGhost"></div>
+
+    <script>
+        (function() {
+            'use strict';
+
+            // ─── DOM refs ───
+            const gridContainer = document.getElementById('gridContainer');
+            const gridTable = document.getElementById('gridTable');
+            const gridHead = document.getElementById('gridHead');
+            const gridBody = document.getElementById('gridBody');
+            const gridEmpty = document.getElementById('gridEmpty');
+            const gridRowCount = document.getElementById('gridRowCount');
+            const gridColCount = document.getElementById('gridColCount');
+            const delimiterSelect = document.getElementById('delimiterSelect');
+            const parseGridBtn = document.getElementById('parseGridBtn');
+            const clearGridBtn = document.getElementById('clearGridBtn');
+            const uploadGridBtn = document.getElementById('uploadGridBtn');
+            const gridFileInput = document.getElementById('gridFileInput');
+            const delimDetectedBadge = document.getElementById('delimDetectedBadge');
+            const validationAlert = document.getElementById('validationAlert');
+            const processingOverlay = document.getElementById('processingOverlay');
+            const processingCount = document.getElementById('processingCount');
+
+            const statusBadge = document.getElementById('statusBadge');
+            const rowCount = document.getElementById('rowCount');
+            const colCount = document.getElementById('colCount');
+            const delimDisplay = document.getElementById('delimDisplay');
+            const fileInfo = document.getElementById('fileInfo');
+            const schemaGrid = document.getElementById('schemaGrid');
+            const resetOverridesBtn = document.getElementById('resetOverridesBtn');
+            const rowStart = document.getElementById('rowStart');
+            const rowEnd = document.getElementById('rowEnd');
+            const rowRangeInfo = document.getElementById('rowRangeInfo');
+            const jsonWrap = document.getElementById('jsonWrap');
+            const formatBtn = document.getElementById('formatBtn');
+            const collapseAllBtn = document.getElementById('collapseAllBtn');
+            const expandAllBtn = document.getElementById('expandAllBtn');
+            const jsonSize = document.getElementById('jsonSize');
+            const dragGhost = document.getElementById('dragGhost');
+
+            const excludeEmpty = document.getElementById('excludeEmpty');
+            const sortKeys = document.getElementById('sortKeys');
+            const outputFormat = document.getElementById('outputFormat');
+            const keyColumn = document.getElementById('keyColumn');
+            const masterCheck = document.getElementById('masterCheck');
+            const formatSelect = document.getElementById('formatSelect');
+
+            const autoBtn = document.getElementById('autoBtn');
+            const downloadBtn = document.getElementById('downloadBtn');
+            const copyBtn = document.getElementById('copyBtn');
+            const undoBtn = document.getElementById('undoBtn');
+            const redoBtn = document.getElementById('redoBtn');
+            const fileNameInput = document.getElementById('fileNameInput');
+
+            // Modal refs
+            const pasteModal = document.getElementById('pasteModal');
+            const pasteTextarea = document.getElementById('pasteTextarea');
+            const modalCancelBtn = document.getElementById('modalCancelBtn');
+            const modalParseBtn = document.getElementById('modalParseBtn');
+            const confirmModal = document.getElementById('confirmModal');
+            const confirmCancelBtn = document.getElementById('confirmCancelBtn');
+            const confirmOkBtn = document.getElementById('confirmOkBtn');
+
+            // Toast container
+            const toastContainer = document.getElementById('toastContainer');
+
+            let viewMode = 'tree';
+            const viewToggles = document.querySelectorAll('.view-toggle');
+
+            // ─── state ───
+            let rawData = [];
+            let headers = [];
+            let columnOrder = [];
+            let columnTypes = {};
+            let selectedColumns = new Set();
+            let treeNodes = [];
+            let columnOverrides = {};
+            let lastDelimiter = ',';
+            let skipNextHistory = false;
+
+            // ─── Toast system ───
+            function showToast(message, type = 'info', duration = 4000) {
+                const toast = document.createElement('div');
+                toast.className = `toast ${type}`;
+                const icons = {
+                    info: 'ℹ️',
+                    success: '✅',
+                    error: '❌'
+                };
+                toast.innerHTML = `
+                    <span class="toast-icon">${icons[type] || 'ℹ️'}</span>
+                    <span>${message}</span>
+                    <button class="toast-close" aria-label="Dismiss">✕</button>
+                `;
+                const closeBtn = toast.querySelector('.toast-close');
+                closeBtn.addEventListener('click', () => {
+                    toast.classList.add('hide');
+                    setTimeout(() => toast.remove(), 300);
+                });
+                toastContainer.appendChild(toast);
+                setTimeout(() => {
+                    toast.classList.add('hide');
+                    setTimeout(() => toast.remove(), 300);
+                }, duration);
+            }
+
+            // ─── Modal handling ───
+            function openPasteModal() {
+                pasteTextarea.value = '';
+                pasteModal.classList.add('active');
+                pasteTextarea.focus();
+            }
+
+            function closePasteModal() {
+                pasteModal.classList.remove('active');
+            }
+
+            function openConfirmModal() {
+                confirmModal.classList.add('active');
+            }
+
+            function closeConfirmModal() {
+                confirmModal.classList.remove('active');
+            }
+
+            modalCancelBtn.addEventListener('click', closePasteModal);
+            modalParseBtn.addEventListener('click', () => {
+                const text = pasteTextarea.value;
+                if (text.trim()) {
+                    parseGridData(text);
+                    closePasteModal();
+                } else {
+                    showToast('Please paste some CSV data.', 'error', 3000);
+                }
+            });
+            pasteModal.addEventListener('click', (e) => {
+                if (e.target === pasteModal) closePasteModal();
+            });
+
+            confirmCancelBtn.addEventListener('click', closeConfirmModal);
+            confirmOkBtn.addEventListener('click', () => {
+                closeConfirmModal();
+                clearData();
+            });
+            confirmModal.addEventListener('click', (e) => {
+                if (e.target === confirmModal) closeConfirmModal();
+            });
+
+            document.addEventListener('keydown', (e) => {
+                if (e.key === 'Escape') {
+                    if (pasteModal.classList.contains('active')) closePasteModal();
+                    if (confirmModal.classList.contains('active')) closeConfirmModal();
+                }
+                if (e.key === 'Enter' && (e.metaKey || e.ctrlKey) && pasteModal.classList.contains('active')) {
+                    e.preventDefault();
+                    modalParseBtn.click();
+                }
+                if (e.key === 'Enter' && confirmModal.classList.contains('active')) {
+                    e.preventDefault();
+                    confirmOkBtn.click();
+                }
+            });
+
+            // ─── undo/redo ───
+            class History {
+                constructor() {
+                    this.stack = [];
+                    this.index = -1;
+                }
+                push(state) {
+                    this.stack = this.stack.slice(0, this.index + 1);
+                    this.stack.push(JSON.parse(JSON.stringify(state)));
+                    this.index++;
+                    updateHistoryButtons();
+                }
+                undo() {
+                    if (this.index > 0) {
+                        this.index--;
+                        return this.stack[this.index];
+                    }
+                    return null;
+                }
+                redo() {
+                    if (this.index < this.stack.length - 1) {
+                        this.index++;
+                        return this.stack[this.index];
+                    }
+                    return null;
+                }
+                canUndo() { return this.index > 0; }
+                canRedo() { return this.index < this.stack.length - 1; }
+            }
+            const history = new History();
+
+            function saveState() {
+                if (skipNextHistory) { skipNextHistory = false; return; }
+                const state = {
+                    columnOrder: [...columnOrder],
+                    columnOverrides: JSON.parse(JSON.stringify(columnOverrides)),
+                    selectedColumns: Array.from(selectedColumns)
+                };
+                history.push(state);
+            }
+
+            function restoreState(state) {
+                if (!state) return;
+                columnOrder = [...state.columnOrder];
+                columnOverrides = JSON.parse(JSON.stringify(state.columnOverrides));
+                selectedColumns = new Set(state.selectedColumns);
+                skipNextHistory = true;
+                renderSchema();
+                updateOutput();
+            }
+
+            function updateHistoryButtons() {
+                undoBtn.disabled = !history.canUndo();
+                redoBtn.disabled = !history.canRedo();
+            }
+
+            undoBtn.addEventListener('click', () => {
+                const prev = history.undo();
+                if (prev) { skipNextHistory = true;
+                    restoreState(prev);
+                    updateHistoryButtons();
+                    setStatus('undone', 'ok');
+                    showToast('Undo successful', 'success', 2000); }
+            });
+            redoBtn.addEventListener('click', () => {
+                const next = history.redo();
+                if (next) { skipNextHistory = true;
+                    restoreState(next);
+                    updateHistoryButtons();
+                    setStatus('redone', 'ok');
+                    showToast('Redo successful', 'success', 2000); }
+            });
+
+            // ─── type helpers ───
+            const typeColorMap = {
+                'string': { class: 'type-string', bg: 'var(--type-string-bg)', color: 'var(--type-string)' },
+                'integer': { class: 'type-integer', bg: 'var(--type-integer-bg)', color: 'var(--type-integer)' },
+                'number': { class: 'type-float', bg: 'var(--type-float-bg)', color: 'var(--type-float)' },
+                'float': { class: 'type-float', bg: 'var(--type-float-bg)', color: 'var(--type-float)' },
+                'boolean': { class: 'type-boolean', bg: 'var(--type-boolean-bg)', color: 'var(--type-boolean)' },
+                'date': { class: 'type-date', bg: 'var(--type-date-bg)', color: 'var(--type-date)' },
+                'null': { class: 'type-null', bg: 'var(--type-null-bg)', color: 'var(--type-null)' }
+            };
+
+            function getTypeClass(type) { return typeColorMap[type]?.class || 'type-string'; }
+
+            function setStatus(text, type) {
+                statusBadge.textContent = text;
+                statusBadge.className = 'badge';
+                if (type === 'ok') statusBadge.classList.add('ok');
+                else if (type === 'error') statusBadge.classList.add('error');
+            }
+
+            function escapeHtml(str) {
+                const d = document.createElement('div');
+                d.textContent = str;
+                return d.innerHTML;
+            }
+
+            function getType(val) {
+                if (val === '' || val === null || val === undefined) return 'null';
+                const t = String(val).trim();
+                if (t === '') return 'null';
+                if (/^-?\d*\.\d+$/.test(t)) return 'float';
+                if (/^-?\d+$/.test(t)) return 'integer';
+                if (/^(true|false)$/i.test(t)) return 'boolean';
+                if (/^\d{4}-\d{2}-\d{2}/.test(t)) return 'date';
+                return 'string';
+            }
+
+            function detectDelimiter(text) {
+                const lines = text.split('\n').filter(l => l.trim() !== '');
+                if (lines.length === 0) return ',';
+                const sample = lines.slice(0, 10).join('\n');
+
+                function countDelim(ch, str) {
+                    let count = 0,
+                        inQuotes = false;
+                    for (let i = 0; i < str.length; i++) {
+                        if (str[i] === '"') inQuotes = !inQuotes;
+                        if (!inQuotes && str[i] === ch) count++;
+                    }
+                    return count;
+                }
+                const candidates = [',', '\t', ';', '|', ' '];
+                let best = ',',
+                    bestCount = -1;
+                for (const ch of candidates) {
+                    let total = 0;
+                    for (const line of sample.split('\n')) total += countDelim(ch, line);
+                    const score = total * (ch === ' ' ? 0.6 : 1);
+                    if (score > bestCount) { bestCount = score;
+                        best = ch; }
+                }
+                if (best === ' ' && bestCount > 0) {
+                    for (const ch of [',', '\t', ';', '|']) {
+                        let total = 0;
+                        for (const line of sample.split('\n')) total += countDelim(ch, line);
+                        if (total > 0 && total >= bestCount * 0.5) { best = ch; break; }
+                    }
+                }
+                return best;
+            }
+
+            function parseCSV(text, delim) {
+                const lines = text.split(/\r?\n/);
+                const valid = lines.filter(l => l.trim() !== '');
+                if (valid.length === 0) return { headers: [], data: [], skipped: 0, errors: [] };
+
+                function parseLine(line, d) {
+                    const res = [];
+                    let cur = '',
+                        inQ = false;
+                    for (let i = 0; i < line.length; i++) {
+                        const ch = line[i];
+                        if (inQ) {
+                            if (ch === '"' && i + 1 < line.length && line[i + 1] === '"') { cur += '"';
+                                i++; } else if (ch === '"') inQ = false;
+                            else cur += ch;
+                        } else {
+                            if (ch === '"') inQ = true;
+                            else if (ch === d) { res.push(cur);
+                                cur = ''; } else cur += ch;
+                        }
+                    }
+                    res.push(cur);
+                    return res;
+                }
+
+                const first = valid[0];
+                const headerRow = parseLine(first, delim);
+                const headers = headerRow.map((h, i) => h.trim() || `col_${i}`);
+
+                const data = [];
+                let skipped = 0;
+                const errors = [];
+                for (let i = 1; i < valid.length; i++) {
+                    const raw = valid[i];
+                    const vals = parseLine(raw, delim);
+                    if (vals.length !== headers.length) {
+                        errors.push({ row: i + 1, expected: headers.length, got: vals.length });
+                        skipped++;
+                        continue;
+                    }
+                    const obj = {};
+                    let has = false;
+                    for (let j = 0; j < headers.length; j++) {
+                        const v = (vals[j] || '').trim();
+                        if (v !== '') has = true;
+                        obj[headers[j]] = v;
+                    }
+                    if (has) data.push(obj);
+                    else skipped++;
+                }
+                return { headers, data, skipped, errors };
+            }
+
+            function generateSchema(data, headers) {
+                const types = {};
+                const sampleSize = Math.min(500, Math.max(data.length, 100));
+                for (const h of headers) {
+                    const samples = data.slice(0, sampleSize).map(r => r[h]).filter(v => v !== '' && v !== null && v !== undefined);
+                    if (samples.length === 0) { types[h] = 'string'; continue; }
+                    const counts = {};
+                    for (const s of samples) { const t = getType(s);
+                        counts[t] = (counts[t] || 0) + 1; }
+                    let best = 'string',
+                        bc = -1;
+                    for (const [t, c] of Object.entries(counts)) { if (c > bc) { bc = c;
+                            best = t; } }
+                    if (best === 'number') best = 'float';
+                    types[h] = best;
+                }
+                return types;
+            }
+
+            // ─── render grid ───
+            function renderGrid() {
+                if (rawData.length === 0 || headers.length === 0) {
+                    gridTable.style.display = 'none';
+                    gridEmpty.style.display = 'flex';
+                    gridRowCount.textContent = '0';
+                    gridColCount.textContent = '0';
+                    delimDetectedBadge.style.display = 'none';
+                    return;
+                }
+                gridEmpty.style.display = 'none';
+                gridTable.style.display = '';
+                const displayDelim = lastDelimiter === '\t' ? 'tab' : lastDelimiter === ' ' ? 'space' : lastDelimiter;
+                delimDetectedBadge.textContent = `auto: ${displayDelim}`;
+                delimDetectedBadge.style.display = 'inline-block';
+
+                gridHead.innerHTML = '';
+                const tr = document.createElement('tr');
+                for (const h of headers) { const th = document.createElement('th');
+                    th.textContent = h;
+                    tr.appendChild(th); }
+                gridHead.appendChild(tr);
+
+                gridBody.innerHTML = '';
+                const maxRows = Math.min(rawData.length, 50);
+                for (let i = 0; i < maxRows; i++) {
+                    const tr2 = document.createElement('tr');
+                    for (const h of headers) {
+                        const td = document.createElement('td');
+                        let val = rawData[i][h] || '';
+                        if (val.length > 60) val = val.slice(0, 58) + '…';
+                        td.textContent = val;
+                        tr2.appendChild(td);
+                    }
+                    gridBody.appendChild(tr2);
+                }
+                if (rawData.length > 50) {
+                    const tr3 = document.createElement('tr');
+                    const td = document.createElement('td');
+                    td.colSpan = headers.length;
+                    td.style.textAlign = 'center';
+                    td.style.color = 'var(--text-muted)';
+                    td.style.fontStyle = 'italic';
+                    td.style.padding = '6px 0';
+                    td.textContent = `… showing ${maxRows} of ${rawData.length}`;
+                    tr3.appendChild(td);
+                    gridBody.appendChild(tr3);
+                }
+                gridRowCount.textContent = rawData.length;
+                gridColCount.textContent = headers.length;
+            }
+
+            // ─── render schema ───
+            function renderSchema() {
+                const ordered = columnOrder.length > 0 ? columnOrder : headers;
+                schemaGrid.innerHTML = '';
+                if (ordered.length === 0) {
+                    schemaGrid.innerHTML =
+                        '<span class="text-muted" style="font-size:10.5px;font-weight:300;padding:8px 0;width:100%;text-align:center;letter-spacing:0.04em;">no columns</span>';
+                    return;
+                }
+                const currentKey = keyColumn.value;
+                keyColumn.innerHTML = '<option value="">— key —</option>';
+                for (const name of ordered) {
+                    const display = columnOverrides[name]?.rename || name;
+                    const opt = document.createElement('option');
+                    opt.value = name;
+                    opt.textContent = display;
+                    keyColumn.appendChild(opt);
+                }
+                if (currentKey && ordered.includes(currentKey)) keyColumn.value = currentKey;
+                else keyColumn.value = '';
+
+                const allSelected = ordered.every(c => selectedColumns.has(c));
+                masterCheck.checked = allSelected;
+
+                for (const name of ordered) {
+                    const override = columnOverrides[name] || {};
+                    const displayName = override.rename || name;
+                    const type = override.type || columnTypes[name] || 'string';
+                    const checked = selectedColumns.has(name);
+                    const typeClass = getTypeClass(type);
+
+                    const chip = document.createElement('div');
+                    chip.className = 'schema-chip';
+                    chip.dataset.col = name;
+                    chip.draggable = true;
+
+                    const handle = document.createElement('span');
+                    handle.className = 'chip-handle';
+                    handle.textContent = '⠿';
+                    chip.appendChild(handle);
+
+                    const checkWrap = document.createElement('span');
+                    checkWrap.className = 'chip-check';
+                    const cb = document.createElement('input');
+                    cb.type = 'checkbox';
+                    cb.checked = checked;
+                    cb.addEventListener('change', (e) => {
+                        e.stopPropagation();
+                        if (cb.checked) selectedColumns.add(name);
+                        else selectedColumns.delete(name);
+                        const ord = columnOrder.length > 0 ? columnOrder : headers;
+                        masterCheck.checked = ord.every(c => selectedColumns.has(c));
+                        saveState();
+                        updateOutput();
+                    });
+                    checkWrap.appendChild(cb);
+                    chip.appendChild(checkWrap);
+
+                    const nameWrap = document.createElement('span');
+                    nameWrap.className = 'chip-name';
+                    const input = document.createElement('input');
+                    input.type = 'text';
+                    input.value = displayName;
+                    input.spellcheck = false;
+                    input.placeholder = name;
+                    input.addEventListener('change', (e) => {
+                        const val = e.target.value.trim();
+                        if (val && val !== name) {
+                            if (!columnOverrides[name]) columnOverrides[name] = {};
+                            columnOverrides[name].rename = val;
+                        } else {
+                            if (columnOverrides[name]) delete columnOverrides[name].rename;
+                            if (columnOverrides[name] && Object.keys(columnOverrides[name]).length === 0) delete columnOverrides[
+                            name];
+                            e.target.value = columnOverrides[name]?.rename || name;
+                        }
+                        saveState();
+                        renderSchema();
+                        updateOutput();
+                    });
+                    input.addEventListener('blur', (e) => {
+                        const ov = columnOverrides[name];
+                        e.target.value = ov?.rename || name;
+                    });
+                    nameWrap.appendChild(input);
+                    chip.appendChild(nameWrap);
+
+                    const typeWrap = document.createElement('span');
+                    typeWrap.className = 'chip-type-wrap';
+                    const typeSelect = document.createElement('select');
+                    typeSelect.className = `chip-type-select ${typeClass}`;
+                    const opts = ['string', 'integer', 'float', 'boolean', 'date', 'null'];
+                    const symbols = { 'string': '▭', 'integer': '▬', 'float': '∿', 'boolean': '⊙', 'date': '◆', 'null': '◯' };
+                    for (const t of opts) {
+                        const o = document.createElement('option');
+                        o.value = t;
+                        o.textContent = `${symbols[t]} ${t}`;
+                        o.className = `opt-${t}`;
+                        const info = typeColorMap[t];
+                        if (info) {
+                            o.style.backgroundColor = info.bg;
+                            o.style.color = info.color;
+                            o.style.borderLeftColor = info.color;
+                        }
+                        if (t === type) o.selected = true;
+                        typeSelect.appendChild(o);
+                    }
+                    typeSelect.addEventListener('change', (e) => {
+                        e.stopPropagation();
+                        const val = typeSelect.value;
+                        if (!columnOverrides[name]) columnOverrides[name] = {};
+                        columnOverrides[name].type = val;
+                        typeSelect.className = `chip-type-select ${getTypeClass(val)}`;
+                        saveState();
+                        renderSchema();
+                        updateOutput();
+                    });
+                    typeWrap.appendChild(typeSelect);
+                    chip.appendChild(typeWrap);
+
+                    const removeBtn = document.createElement('span');
+                    removeBtn.className = 'chip-remove';
+                    removeBtn.textContent = '×';
+                    removeBtn.setAttribute('aria-label', `Uncheck ${displayName}`);
+                    removeBtn.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        if (selectedColumns.has(name)) { selectedColumns.delete(name);
+                            saveState();
+                            renderSchema();
+                            updateOutput(); }
+                    });
+                    chip.appendChild(removeBtn);
+
+                    // drag
+                    chip.addEventListener('dragstart', (e) => {
+                        e.dataTransfer.setData('text/plain', name);
+                        chip.classList.add('dragging');
+                        dragGhost.textContent = displayName;
+                        dragGhost.classList.remove('hidden');
+                        setTimeout(() => { dragGhost.style.left = e.clientX + 'px';
+                            dragGhost.style.top = e.clientY + 'px'; }, 0);
+                    });
+                    chip.addEventListener('dragend', () => {
+                        chip.classList.remove('dragging');
+                        dragGhost.classList.add('hidden');
+                        document.querySelectorAll('.schema-chip.drag-over-chip').forEach(el => el.classList.remove(
+                        'drag-over-chip'));
+                        schemaGrid.classList.remove('drag-over');
+                    });
+                    chip.addEventListener('dragover', (e) => {
+                        e.preventDefault();
+                        document.querySelectorAll('.schema-chip.drag-over-chip').forEach(el => el.classList.remove(
+                            'drag-over-chip'));
+                        chip.classList.add('drag-over-chip');
+                    });
+                    chip.addEventListener('dragleave', () => chip.classList.remove('drag-over-chip'));
+                    chip.addEventListener('drop', (e) => {
+                        e.preventDefault();
+                        chip.classList.remove('drag-over-chip');
+                        const from = e.dataTransfer.getData('text/plain');
+                        if (from && from !== name) {
+                            const idxFrom = columnOrder.indexOf(from);
+                            const idxTo = columnOrder.indexOf(name);
+                            if (idxFrom !== -1 && idxTo !== -1) {
+                                const [rem] = columnOrder.splice(idxFrom, 1);
+                                columnOrder.splice(idxTo, 0, rem);
+                                saveState();
+                                renderSchema();
+                                updateOutput();
+                            }
+                        }
+                    });
+                    schemaGrid.appendChild(chip);
+                }
+
+                schemaGrid.addEventListener('dragover', e => e.preventDefault());
+                schemaGrid.addEventListener('drop', (e) => {
+                    e.preventDefault();
+                    schemaGrid.classList.remove('drag-over');
+                    const from = e.dataTransfer.getData('text/plain');
+                    if (from && columnOrder.includes(from)) {
+                        const idx = columnOrder.indexOf(from);
+                        const [rem] = columnOrder.splice(idx, 1);
+                        columnOrder.push(rem);
+                        saveState();
+                        renderSchema();
+                        updateOutput();
+                    }
+                });
+                schemaGrid.addEventListener('dragenter', (e) => { if (e.target === schemaGrid) schemaGrid.classList.add(
+                        'drag-over'); });
+                schemaGrid.addEventListener('dragleave', (e) => { if (e.target === schemaGrid) schemaGrid.classList.remove(
+                        'drag-over'); });
+                updateRowRangeInfo();
+            }
+
+            masterCheck.addEventListener('change', () => {
+                const ord = columnOrder.length > 0 ? columnOrder : headers;
+                if (masterCheck.checked) { for (const c of ord) selectedColumns.add(c); } else selectedColumns.clear();
+                saveState();
+                renderSchema();
+                updateOutput();
+            });
+
+            function updateRowRangeInfo() {
+                const start = parseInt(rowStart.value) || 0;
+                const end = parseInt(rowEnd.value) || 9999;
+                const total = rawData.length;
+                if (total === 0) { rowRangeInfo.textContent = 'no data'; return; }
+                const avail = Math.max(0, Math.min(end, total - 1) - start + 1);
+                rowRangeInfo.textContent = `${avail} of ${total} rows · ${start}–${Math.min(end, total-1)}`;
+            }
+
+            function getRowRange() {
+                const start = Math.max(0, parseInt(rowStart.value) || 0);
+                const end = Math.min(rawData.length - 1, parseInt(rowEnd.value) || 9999);
+                return { start, end };
+            }
+
+            // ─── Helper to stringify based on format ───
+            function stringifyData(data, formatMode) {
+                if (formatMode === 'clean') return JSON.stringify(data, null, 2);
+                if (formatMode === 'compact') return JSON.stringify(data, null, 0);
+                return JSON.stringify(data); // mini
+            }
+
+            // ─── build JSON ───
+            function buildJSON() {
+                if (rawData.length === 0 || selectedColumns.size === 0) return null;
+                const { start, end } = getRowRange();
+                const cols = columnOrder.filter(c => selectedColumns.has(c));
+                if (cols.length === 0) return null;
+                const exclude = excludeEmpty.checked;
+                const sort = sortKeys.checked;
+                const format = outputFormat.value;
+                const keyCol = keyColumn.value;
+                const formatMode = formatSelect.value;
+
+                const result = [];
+                for (let i = start; i <= end && i < rawData.length; i++) {
+                    const row = rawData[i];
+                    const obj = {};
+                    for (const c of cols) {
+                        const override = columnOverrides[c] || {};
+                        const target = override.rename || c;
+                        let val = row[c] || '';
+                        const type = override.type || columnTypes[c] || 'string';
+                        if (type === 'integer' && val !== '') val = parseInt(val, 10);
+                        else if (type === 'float' && val !== '') val = parseFloat(val);
+                        else if (type === 'boolean' && val !== '') val = val.toLowerCase() === 'true';
+                        else if (type === 'null' && val === '') val = null;
+                        if (!(exclude && (val === '' || val === null || val === undefined))) {
+                            obj[target] = val;
+                        }
+                    }
+                    if (Object.keys(obj).length > 0) result.push(obj);
+                }
+                if (result.length === 0) return null;
+                if (sort) {
+                    for (const obj of result) {
+                        const sorted = {};
+                        for (const k of Object.keys(obj).sort()) sorted[k] = obj[k];
+                        Object.assign(obj, sorted);
+                    }
+                }
+                let output;
+                if (format === 'object' && keyCol && selectedColumns.has(keyCol)) {
+                    const keyed = {};
+                    for (const obj of result) {
+                        const kv = obj[keyCol];
+                        if (kv !== undefined && kv !== null) keyed[String(kv)] = obj;
+                    }
+                    output = keyed;
+                } else output = result;
+                return { data: output, schema: columnTypes, overrides: columnOverrides, formatMode };
+            }
+
+            // ─── render output ───
+            function renderOutput(result) {
+                if (!result || !result.data || (Array.isArray(result.data) && result.data.length === 0) || (typeof result
+                        .data === 'object' && Object.keys(result.data).length === 0)) {
+                    jsonWrap.innerHTML = '<div class="empty-state">no data to display</div>';
+                    jsonSize.textContent = '';
+                    treeNodes = [];
+                    return;
+                }
+                const { data, schema, overrides, formatMode } = result;
+
+                if (viewMode === 'raw') {
+                    const raw = stringifyData(data, formatMode);
+                    const pre = document.createElement('pre');
+                    pre.className = 'raw-json';
+                    pre.textContent = raw;
+                    jsonWrap.innerHTML = '';
+                    jsonWrap.appendChild(pre);
+                    const size = new Blob([raw]).size;
+                    const count = Array.isArray(data) ? data.length : Object.keys(data).length;
+                    jsonSize.textContent = `${count} items · ${size} B · ${formatMode}`;
+                    treeNodes = [];
+                    return;
+                }
+
+                // tree view
+                const wrap = document.createElement('div');
+                wrap.className = 'json-tree';
+                const root = buildTree(data, 'root', 0, schema, overrides);
+                wrap.appendChild(root);
+                jsonWrap.innerHTML = '';
+                jsonWrap.appendChild(wrap);
+                const size = new Blob([JSON.stringify(data)]).size;
+                const count = Array.isArray(data) ? data.length : Object.keys(data).length;
+                jsonSize.textContent = `${count} items · ${size} B · tree view`;
+
+                treeNodes = [];
+                wrap.querySelectorAll('.node[data-path]').forEach(el => {
+                    const toggle = el.querySelector('.toggle');
+                    if (toggle) treeNodes.push({ el, toggle });
+                });
+            }
+
+            function getValueType(val, keyName, schema, overrides) {
+                if (val === null || val === undefined) return 'null';
+                if (keyName && schema && overrides) {
+                    const ov = overrides[keyName];
+                    if (ov && ov.type) return ov.type;
+                    if (schema[keyName]) return schema[keyName];
+                }
+                if (typeof val === 'string') { if (/^\d{4}-\d{2}-\d{2}/.test(val)) return 'date'; return 'string'; }
+                if (typeof val === 'number') { return Number.isInteger(val) ? 'integer' : 'float'; }
+                if (typeof val === 'boolean') return 'boolean';
+                return 'string';
+            }
+
+            function buildTree(data, path, depth, schema, overrides, origColName) {
+                const container = document.createElement('div');
+                container.className = 'node';
+                container.dataset.path = path;
+                const isArray = Array.isArray(data);
+                const isObject = data !== null && typeof data === 'object' && !isArray && !(data instanceof Date);
+                const line = document.createElement('div');
+
+                if (isArray) {
+                    const toggle = document.createElement('span');
+                    toggle.className = 'toggle open';
+                    toggle.textContent = '▶';
+                    toggle.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const children = container.querySelector('.children');
+                        if (children) { children.classList.toggle('collapsed');
+                            toggle.classList.toggle('open'); }
+                    });
+                    line.appendChild(toggle);
+                    const label = document.createElement('span');
+                    label.className = 'value-array';
+                    label.textContent = `[${data.length}]`;
+                    line.appendChild(label);
+                    container.appendChild(line);
+                    const children = document.createElement('div');
+                    children.className = 'children';
+                    for (let i = 0; i < data.length; i++) {
+                        const child = buildTree(data[i], `${path}[${i}]`, depth + 1, schema, overrides, origColName);
+                        children.appendChild(child);
+                        if (i < data.length - 1) { const c = document.createElement('span');
+                            c.className = 'comma';
+                            c.textContent = ',';
+                            children.appendChild(c); }
+                    }
+                    container.appendChild(children);
+                } else if (isObject) {
+                    const toggle = document.createElement('span');
+                    toggle.className = 'toggle open';
+                    toggle.textContent = '▶';
+                    toggle.addEventListener('click', (e) => {
+                        e.stopPropagation();
+                        const children = container.querySelector('.children');
+                        if (children) { children.classList.toggle('collapsed');
+                            toggle.classList.toggle('open'); }
+                    });
+                    line.appendChild(toggle);
+                    const label = document.createElement('span');
+                    label.className = 'value-object';
+                    label.textContent = `{${Object.keys(data).length}}`;
+                    line.appendChild(label);
+                    container.appendChild(line);
+                    const keys = Object.keys(data);
+                    const children = document.createElement('div');
+                    children.className = 'children';
+                    for (let i = 0; i < keys.length; i++) {
+                        const k = keys[i];
+                        let origCol = k;
+                        for (const [on, ov] of Object.entries(overrides || {})) { if (ov && ov.rename === k) { origCol = on;
+                                break; } }
+                        const child = buildTree(data[k], `${path}.${k}`, depth + 1, schema, overrides, origCol);
+                        const keySpan = document.createElement('span');
+                        keySpan.className = 'key';
+                        keySpan.textContent = k;
+                        const existingLine = child.querySelector('div:first-child');
+                        if (existingLine) {
+                            const tog = existingLine.querySelector('.toggle');
+                            const valSpan = existingLine.querySelector('[class*="value-"]');
+                            existingLine.innerHTML = '';
+                            if (tog) existingLine.appendChild(tog);
+                            existingLine.appendChild(keySpan);
+                            if (valSpan) existingLine.appendChild(valSpan);
+                        }
+                        children.appendChild(child);
+                        if (i < keys.length - 1) { const c = document.createElement('span');
+                            c.className = 'comma';
+                            c.textContent = ',';
+                            children.appendChild(c); }
+                    }
+                    container.appendChild(children);
+                } else {
+                    const val = data;
+                    const type = getValueType(val, origColName, schema, overrides);
+                    const span = document.createElement('span');
+                    span.className = 'value-' + type;
+                    if (val === null || val === undefined) { span.className = 'value-null';
+                        span.textContent = 'null'; } else if (type === 'string') { span.textContent = `"${escapeHtml(String(val))}"`; } else
+                        span.textContent = String(val);
+                    line.appendChild(span);
+                    container.appendChild(line);
+                }
+                container.addEventListener('mouseenter', () => container.classList.add('highlight'));
+                container.addEventListener('mouseleave', () => container.classList.remove('highlight'));
+                return container;
+            }
+
+            function updateOutput() {
+                const result = buildJSON();
+                if (result) {
+                    renderOutput(result);
+                    downloadBtn.disabled = false;
+                    copyBtn.disabled = false;
+                    setStatus('ready', 'ok');
+                } else {
+                    jsonWrap.innerHTML = '<div class="empty-state">no data — check columns & rows</div>';
+                    jsonSize.textContent = '';
+                    downloadBtn.disabled = true;
+                    copyBtn.disabled = true;
+                    if (rawData.length === 0) setStatus('idle', '');
+                    else setStatus('no selection', 'error');
+                }
+            }
+
+            // ─── load data ───
+            function loadData(text, delimOverride) {
+                let delim = delimOverride;
+                let detected = false;
+                if (!delim || delim === 'auto') { delim = detectDelimiter(text);
+                    detected = true; }
+                lastDelimiter = delim;
+                const lineCount = text.split('\n').length;
+                processingCount.textContent = lineCount;
+                processingOverlay.style.display = 'block';
+
+                setTimeout(() => {
+                    const parsed = parseCSV(text, delim);
+                    validationAlert.classList.remove('show');
+                    if (parsed.skipped > 0) {
+                        let msg = `⚠ Skipped ${parsed.skipped} row${parsed.skipped > 1 ? 's' : ''}`;
+                        if (parsed.errors.length > 0) {
+                            const details = parsed.errors.slice(0, 5).map(e =>
+                                `Row ${e.row}: expected ${e.expected}, got ${e.got}`
+                            ).join('; ');
+                            msg += `. ${details}${parsed.errors.length > 5 ? ' …' : ''}`;
+                        }
+                        validationAlert.textContent = msg;
+                        validationAlert.classList.add('show');
+                    }
+                    if (parsed.headers.length === 0 || parsed.data.length === 0) {
+                        setStatus('parse error — no data', 'error');
+                        processingOverlay.style.display = 'none';
+                        showToast('No data could be parsed from the CSV.', 'error', 4000);
+                        return;
+                    }
+                    rawData = parsed.data;
+                    headers = parsed.headers;
+                    columnOrder = [...headers];
+                    selectedColumns = new Set(headers);
+                    columnTypes = generateSchema(rawData, headers);
+                    columnOverrides = {};
+                    history.stack = [];
+                    history.index = -1;
+                    rowEnd.value = Math.max(0, rawData.length - 1);
+                    rowCount.textContent = rawData.length;
+                    colCount.textContent = headers.length;
+                    const displayDelim = delim === '\t' ? 'tab' : delim === ' ' ? 'space' : delim;
+                    delimDisplay.textContent = displayDelim;
+                    fileInfo.textContent = `${rawData.length} rows · ${headers.length} cols`;
+                    keyColumn.disabled = (outputFormat.value !== 'object');
+                    renderGrid();
+                    renderSchema();
+                    updateOutput();
+                    updateHistoryButtons();
+                    setStatus(detected ? 'auto-detected' : 'loaded', 'ok');
+                    showToast(`Loaded ${rawData.length} rows, ${headers.length} columns`, 'success', 3000);
+                    processingOverlay.style.display = 'none';
+                }, 30);
+                return true;
+            }
+
+            function parseGridData(text) {
+                const delim = delimiterSelect.value;
+                return loadData(text, delim);
+            }
+
+            function autoConvert() {
+                if (rawData.length === 0) {
+                    setStatus('no data in grid', 'error');
+                    showToast('No data to auto‑configure.', 'error', 3000);
+                    return;
+                }
+                selectedColumns = new Set(headers);
+                rowStart.value = 0;
+                rowEnd.value = Math.max(0, rawData.length - 1);
+                renderSchema();
+                updateOutput();
+                setStatus('auto done', 'ok');
+                showToast('Auto‑configured columns and rows.', 'success', 2500);
+            }
+
+            function downloadJSON() {
+                const result = buildJSON();
+                if (!result) {
+                    showToast('No data to download.', 'error', 3000);
+                    return;
+                }
+                const str = stringifyData(result.data, result.formatMode);
+                const blob = new Blob([str], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                const base = fileNameInput.value.trim() || 'data';
+                const suffix = result.formatMode === 'mini' ? '.min.json' : '.json';
+                a.download = `${base}${suffix}`;
+                a.click();
+                URL.revokeObjectURL(url);
+                showToast(`Downloaded ${base}${suffix}`, 'success', 2500);
+            }
+
+            function copyJSON() {
+                const result = buildJSON();
+                if (!result) {
+                    showToast('No data to copy.', 'error', 3000);
+                    return;
+                }
+                const str = stringifyData(result.data, result.formatMode);
+                navigator.clipboard.writeText(str).then(() => {
+                    setStatus('copied!', 'ok');
+                    showToast('Copied to clipboard!', 'success', 2000);
+                    setTimeout(() => setStatus('ready', 'ok'), 1500);
+                }).catch(() => {
+                    const ta = document.createElement('textarea');
+                    ta.value = str;
+                    document.body.appendChild(ta);
+                    ta.select();
+                    document.execCommand('copy');
+                    ta.remove();
+                    setStatus('copied!', 'ok');
+                    showToast('Copied to clipboard!', 'success', 2000);
+                    setTimeout(() => setStatus('ready', 'ok'), 1500);
+                });
+            }
+
+            function collapseAll() {
+                treeNodes.forEach(({ toggle, el }) => {
+                    const children = el.querySelector('.children');
+                    if (children) { children.classList.add('collapsed');
+                        toggle.classList.remove('open'); }
+                });
+            }
+
+            function expandAll() {
+                treeNodes.forEach(({ toggle, el }) => {
+                    const children = el.querySelector('.children');
+                    if (children) { children.classList.remove('collapsed');
+                        toggle.classList.add('open'); }
+                });
+            }
+
+            // ─── view toggle ───
+            viewToggles.forEach(btn => {
+                btn.addEventListener('click', () => {
+                    viewToggles.forEach(b => b.classList.remove('active'));
+                    btn.classList.add('active');
+                    viewMode = btn.dataset.view;
+                    updateOutput();
+                });
+            });
+
+            formatSelect.addEventListener('change', updateOutput);
+
+            // ─── grid paste ───
+            gridContainer.addEventListener('paste', (e) => {
+                const text = e.clipboardData?.getData('text/plain');
+                if (text) { e.preventDefault();
+                    parseGridData(text); }
+            });
+
+            // ─── drag & drop ───
+            gridContainer.addEventListener('dragover', (e) => { e.preventDefault();
+                gridContainer.classList.add('drag-over-highlight'); });
+            gridContainer.addEventListener('dragleave', (e) => { e.preventDefault();
+                gridContainer.classList.remove('drag-over-highlight'); });
+            gridContainer.addEventListener('drop', (e) => {
+                e.preventDefault();
+                gridContainer.classList.remove('drag-over-highlight');
+                const files = e.dataTransfer?.files;
+                if (files && files.length) {
+                    const reader = new FileReader();
+                    reader.onload = (ev) => parseGridData(ev.target.result);
+                    reader.onerror = () => {
+                        setStatus('file read error', 'error');
+                        showToast('Error reading file.', 'error', 3000);
+                    };
+                    reader.readAsText(files[0]);
+                }
+            });
+
+            uploadGridBtn.addEventListener('click', () => gridFileInput.click());
+            gridFileInput.addEventListener('change', (e) => {
+                const file = e.target.files[0];
+                if (!file) return;
+                const reader = new FileReader();
+                reader.onload = (ev) => { parseGridData(ev.target.result);
+                    gridFileInput.value = ''; };
+                reader.onerror = () => {
+                    setStatus('file read error', 'error');
+                    showToast('Error reading file.', 'error', 3000);
+                };
+                reader.readAsText(file);
+            });
+
+            // Use custom modal instead of prompt
+            parseGridBtn.addEventListener('click', openPasteModal);
+
+            // ─── clear data logic ───
+            function clearData() {
+                if (rawData.length === 0) {
+                    showToast('No data to clear.', 'info', 2000);
+                    return;
+                }
+                rawData = [];
+                headers = [];
+                columnOrder = [];
+                selectedColumns = new Set();
+                columnTypes = {};
+                columnOverrides = {};
+                rowCount.textContent = '—';
+                colCount.textContent = '—';
+                delimDisplay.textContent = '—';
+                fileInfo.textContent = '';
+                validationAlert.classList.remove('show');
+                renderGrid();
+                renderSchema();
+                jsonWrap.innerHTML = '<div class="empty-state">no data · import a CSV first</div>';
+                jsonSize.textContent = '';
+                downloadBtn.disabled = true;
+                copyBtn.disabled = true;
+                undoBtn.disabled = true;
+                redoBtn.disabled = true;
+                setStatus('idle', '');
+                showToast('Cleared all data.', 'info', 2000);
+            }
+
+            clearGridBtn.addEventListener('click', () => {
+                if (rawData.length === 0) {
+                    showToast('No data to clear.', 'info', 2000);
+                    return;
+                }
+                openConfirmModal();
+            });
+
+            resetOverridesBtn.addEventListener('click', () => {
+                if (Object.keys(columnOverrides).length === 0) {
+                    showToast('No overrides to reset.', 'info', 2000);
+                    return;
+                }
+                columnOverrides = {};
+                saveState();
+                renderSchema();
+                updateOutput();
+                showToast('Reset column overrides.', 'success', 2000);
+            });
+
+            rowStart.addEventListener('change', updateOutput);
+            rowEnd.addEventListener('change', updateOutput);
+            formatBtn.addEventListener('click', updateOutput);
+            collapseAllBtn.addEventListener('click', collapseAll);
+            expandAllBtn.addEventListener('click', expandAll);
+
+            outputFormat.addEventListener('change', () => {
+                keyColumn.disabled = (outputFormat.value !== 'object');
+                if (outputFormat.value === 'object') {
+                    const ord = columnOrder.length > 0 ? columnOrder : headers;
+                    if (keyColumn.options.length <= 1) {
+                        for (const name of ord) {
+                            const display = columnOverrides[name]?.rename || name;
+                            const opt = document.createElement('option');
+                            opt.value = name;
+                            opt.textContent = display;
+                            keyColumn.appendChild(opt);
+                        }
+                    }
+                    if (!keyColumn.value && ord.length) keyColumn.value = ord[0];
+                }
+                updateOutput();
+            });
+            keyColumn.addEventListener('change', updateOutput);
+            excludeEmpty.addEventListener('change', updateOutput);
+            sortKeys.addEventListener('change', updateOutput);
+
+            document.addEventListener('keydown', (e) => {
+                if ((e.metaKey || e.ctrlKey) && e.key === 'Enter') { e.preventDefault();
+                    autoConvert(); }
+            });
+
+            autoBtn.addEventListener('click', autoConvert);
+            downloadBtn.addEventListener('click', downloadJSON);
+            copyBtn.addEventListener('click', copyJSON);
+
+            // ─── init ───
+            setStatus('idle', '');
+            renderGrid();
+            renderSchema();
+            jsonWrap.innerHTML = '<div class="empty-state">no data · import a CSV first</div>';
+            keyColumn.disabled = true;
+            updateHistoryButtons();
+
+            document.addEventListener('dragover', (e) => {
+                if (!dragGhost.classList.contains('hidden')) {
+                    dragGhost.style.left = e.clientX + 'px';
+                    dragGhost.style.top = e.clientY + 'px';
+                }
+            });
+
+            window.__state = {
+                rawData,
+                headers,
+                columnOrder,
+                columnTypes,
+                selectedColumns,
+                columnOverrides,
+                buildJSON,
+                loadData,
+                autoConvert
+            };
+
+            window.showToast = showToast;
+
+        })();
+    </script>
+
+</body>
+</html>
